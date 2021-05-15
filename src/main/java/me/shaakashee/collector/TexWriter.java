@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 public class TexWriter {
 
-    public static boolean writeCollectionToTex(ArrayList<Etikett> etiketts, String path){
+    public static File writeCollectionToTex(ArrayList<Etikett> etiketts, String path){
 
         String tex = createTexString(etiketts);
 
-        createFile(path);
+        File ret = createFile(path);
         try {
             FileWriter myWriter = new FileWriter(path+".tex");
             myWriter.write(tex);
@@ -22,10 +22,10 @@ public class TexWriter {
             e.printStackTrace();
         }
 
-        return true;
+        return ret;
     }
 
-    public static boolean createFile(String path){
+    public static File createFile(String path){
         try {
             File myObj = new File(path + ".tex");
             if (myObj.createNewFile()) {
@@ -33,12 +33,12 @@ public class TexWriter {
             } else {
                 System.out.println("File already exists.");
             }
+            return myObj;
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-            return false;
+            return null;
         }
-        return true;
     }
 
     public static String createTexString(ArrayList<Etikett> etiketts){

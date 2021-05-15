@@ -2,6 +2,7 @@ package me.shaakashee.collector;
 
 import me.shaakashee.collector.model.Etikett;
 
+import java.io.File;
 import java.net.http.HttpRequest;
 import java.util.ArrayList;
 
@@ -26,7 +27,8 @@ public class Main {
         test.setUrl(p.get(0).url);
         ArrayList<Etikett> e = new ArrayList<>();
         e.add(test);
-        TexWriter.writeCollectionToTex(e, "cT");
+        File tmp = TexWriter.writeCollectionToTex(e, "texTest\\cT");
+        TexCaller.callLatex(tmp.getPath());
     }
 
 
