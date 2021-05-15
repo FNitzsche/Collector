@@ -1,10 +1,9 @@
-package me.shaakashee.collector;
+package me.shaakashee.collector.utils.wikiUtils;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 
 public class WikiParser {

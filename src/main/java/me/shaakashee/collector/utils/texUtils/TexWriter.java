@@ -1,4 +1,4 @@
-package me.shaakashee.collector;
+package me.shaakashee.collector.utils.texUtils;
 
 import me.shaakashee.collector.model.Etikett;
 

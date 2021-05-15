@@ -1,4 +1,4 @@
-package me.shaakashee.collector;
+package me.shaakashee.collector.utils.texUtils;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -6,7 +6,6 @@ import javafx.scene.control.Alert;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class TexCaller {
 

@@ -1,4 +1,4 @@
-package me.shaakashee.collector;
+package me.shaakashee.collector.utils.collectionUtils;
 
 import me.shaakashee.collector.model.Etikett;
 import org.json.JSONArray;

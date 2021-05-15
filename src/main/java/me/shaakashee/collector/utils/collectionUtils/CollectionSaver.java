@@ -1,7 +1,6 @@
-package me.shaakashee.collector;
+package me.shaakashee.collector.utils.collectionUtils;
 
 import me.shaakashee.collector.model.Etikett;
-import org.graalvm.compiler.asm.amd64.AMD64Assembler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

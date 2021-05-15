@@ -1,5 +1,7 @@
 package me.shaakashee.collector.model;
 
+import java.util.HashMap;
+
 public class Etikett {
     private String fam;
     private String gattung;
@@ -13,6 +15,9 @@ public class Etikett {
     private String date;
     private String text;
     private String url;
+
+    private String pageID;
+    private HashMap<String, String> possiblePages;
 
     public static Etikett build(String fam, String gattung, String art, String autor, String name, String fundort, String standort, String leg, String det, String date, String text, String url){
         Etikett etikett = new Etikett();
