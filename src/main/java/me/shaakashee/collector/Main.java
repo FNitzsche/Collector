@@ -12,7 +12,7 @@ public class Main {
         //System.out.println(WikiConnector.getSearchResults("loewenzahn"));
         String page = WikiConnector.getPageIntroText(new String[]{"18327"});
         ArrayList<WikiParser.pageStruct> p = WikiParser.parseIntroPage(page);
-        Etikett test = new Etikett();
+        /*Etikett test = new Etikett();
         test.setFam("blabla");
         test.setGattung("blubb");
         test.setArt("blubb");
@@ -26,9 +26,11 @@ public class Main {
         test.setText(p.get(0).text);
         test.setUrl(p.get(0).url);
         ArrayList<Etikett> e = new ArrayList<>();
-        e.add(test);
+        e.add(test);*/
+        ArrayList<Etikett> e = CollectionLoader.loadCollection("cSave");
         File tmp = TexWriter.writeCollectionToTex(e, "texTest\\cT");
-        TexCaller.callLatex(tmp.getPath());
+        CollectionSaver.writeCollectionToFile(e, "cSave");
+        //TexCaller.callLatex(tmp.getPath());
     }
 
 

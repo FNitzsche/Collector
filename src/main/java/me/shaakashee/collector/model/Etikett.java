@@ -19,6 +19,7 @@ public class Etikett {
         etikett.fam = fam;
         etikett.gattung = gattung;
         etikett.art = art;
+        etikett.autor = autor;
         etikett.name = name;
         etikett.fundort = fundort;
         etikett.standort = standort;
