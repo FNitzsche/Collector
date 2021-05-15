@@ -11,12 +11,16 @@
 \usepackage{kpfonts}
 \usepackage{multicol}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
-\usepackage[usestackEOL]{stackengine}
-\usepackage{hyperref}
+\usepackage{qrcode}
 \begin{document}
-\vspace*{\fill}
-{\raggedleft\vspace*{\fill}\Longstack[l]{
-\textbf{Familie: } blabla\\
+\begin{multicols*}{2}
+\vfill\null
+\begin{flushright}
+\qrcode{https://de.wikipedia.org/wiki/Gew%C3%B6hnlicher_L%C3%B6wenzahn}
+\end{flushright}
+
+\columnbreak\vspace*{\fill}
+\noindent\textbf{Familie: } blabla\\
 \textbf{Gattung: } blubb\\
 \textbf{Art: } blubb\\
 \textbf{Autor: } blubb\\
@@ -26,7 +30,6 @@
 \textbf{Leg: } blubb\\
 \textbf{Det: } blubb\\
 \textbf{Datum: } blubb\\
-}\par
-}
-\newpage
-\end{document}
+{\footnotesize Der Gewoehnliche Loewenzahn (Taraxacum sect. Ruderalia) stellt eine Gruppe sehr aehnlicher und nah verwandter Pflanzenarten in der Gattung Loewenzahn (Taraxacum) aus der Familie der Korbbluetler (Asteraceae) dar. Meist werden diese Pflanzen einfach als Loewenzahn bezeichnet, wodurch Verwechslungsgefahr mit der Gattung Loewenzahn (Leontodon) besteht.\footnote{https://de.wikipedia.org/wiki/Gew\%C3\%B6hnlicher\_L\%C3\%B6wenzahn}
+}\end{multicols*}
+\newpage\end{document}

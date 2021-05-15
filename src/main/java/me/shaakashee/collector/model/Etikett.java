@@ -12,8 +12,9 @@ public class Etikett {
     private String det;
     private String date;
     private String text;
+    private String url;
 
-    public static Etikett build(String fam, String gattung, String art, String autor, String name, String fundort, String standort, String leg, String det, String date, String text){
+    public static Etikett build(String fam, String gattung, String art, String autor, String name, String fundort, String standort, String leg, String det, String date, String text, String url){
         Etikett etikett = new Etikett();
         etikett.fam = fam;
         etikett.gattung = gattung;
@@ -25,6 +26,7 @@ public class Etikett {
         etikett.det = det;
         etikett.date = date;
         etikett.text = text;
+        etikett.url = url;
         return etikett;
     }
 
@@ -114,5 +116,13 @@ public class Etikett {
 
     public void setAutor(String autor) {
         this.autor = autor;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

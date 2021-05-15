@@ -57,8 +57,7 @@ public class TexWriter {
                 "\\usepackage{kpfonts}\n" +
                 "\\usepackage{multicol}\n" +
                 "\\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}\n" +
-                "\\usepackage[usestackEOL]{stackengine}\n" +
-                "\\usepackage{hyperref}\n");
+                "\\usepackage{qrcode}\n");
 
         ret.append("\\begin{document}\n");
 
@@ -74,8 +73,14 @@ public class TexWriter {
     public static String etikettToString(Etikett etikett){
         StringBuilder ret = new StringBuilder();
 
-        ret.append("\\vspace*{\\fill}\n");
-        ret.append("{\\raggedleft\\vspace*{\\fill}\\Longstack[l]{\n");
+        ret.append("\\begin{multicols*}{2}\n" +
+                "\\vfill\\null\n" +
+                "\\begin{flushright}\n");
+        ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
+        ret.append("\\end{flushright}\n" +
+                "\n" +
+                "\\columnbreak\\vspace*{\\fill}\n" +
+                "\\noindent");
 
         ret.append("\\textbf{Familie: } ");
         ret.append((etikett.getFam().length() > 35? "\\\\\n":"") + etikett.getFam() + "\\\\\n");
@@ -107,11 +112,20 @@ public class TexWriter {
         ret.append("\\textbf{Datum: } ");
         ret.append((etikett.getDate().length() > 35? "\\\\\n":"") + etikett.getDate() + "\\\\\n");
 
-        ret.append("}\\par\n" +
-                "}\n" +
-                "\\newpage\n");
+        ret.append("{\\footnotesize ");
+        ret.append(etikett.getText().trim());
+        ret.append("\\footnote{" + formatURL(etikett.getUrl()) + "}\n}");
+
+        ret.append("\\end{multicols*}\n" +
+                "\\newpage");
 
         return ret.toString();
+    }
+
+    public static String formatURL(String url){
+        String formatted = url.replace("%", "\\%")
+                .replace("_", "\\_");
+        return formatted;
     }
 
 }

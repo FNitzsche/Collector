@@ -23,6 +23,7 @@ public class Main {
         test.setDet("blubb");
         test.setDate("blubb");
         test.setText(p.get(0).text);
+        test.setUrl(p.get(0).url);
         ArrayList<Etikett> e = new ArrayList<>();
         e.add(test);
         TexWriter.writeCollectionToTex(e, "cT");
