@@ -4,22 +4,39 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import me.shaakashee.collector.model.Collection;
 
+import java.beans.PropertyChangeSupport;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class AppStart extends Application {
 
-    FXMLLoad mainScreen = new FXMLLoad("/me/shaakashee/collector/mainScreen.fxml", new MainScreenCon());
+    public static final String COLLECTION = "collection";
 
-    public Collection activeCollection;
+    public PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+    FXMLLoad mainScreen;
+
+    private Collection activeCollection;
     public Stage mainStage;
     public ExecutorService exe = Executors.newCachedThreadPool();
 
     @Override
     public void start(Stage stage) throws Exception {
         mainStage = stage;
+        MainScreenCon mainScreenCon = new MainScreenCon();
+        mainScreenCon.appStart = this;
+        mainScreen = new FXMLLoad("/me/shaakashee/collector/mainScreen.fxml", mainScreenCon);
         stage.setScene(mainScreen.getScene());
-        mainScreen.getController(MainScreenCon.class).appStart = this;
         stage.show();
+    }
+
+    public Collection getActiveCollection() {
+        return activeCollection;
+    }
+
+    public void setActiveCollection(Collection activeCollection) {
+        Collection old = this.activeCollection;
+        this.activeCollection = activeCollection;
+        propertyChangeSupport.firePropertyChange(COLLECTION, old, this.activeCollection);
     }
 }

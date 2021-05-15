@@ -131,4 +131,9 @@ public class Etikett {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public String toString(){
+        return ((name != null?name + ": ":"Unbenannt: ") + (date != null?date:"kein Datum"));
+    }
 }

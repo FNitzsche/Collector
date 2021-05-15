@@ -5,9 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import me.shaakashee.collector.model.Collection;
+import me.shaakashee.collector.model.Etikett;
 import me.shaakashee.collector.utils.collectionUtils.CollectionLoader;
 import me.shaakashee.collector.utils.collectionUtils.CollectionSaver;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 public class MainScreenCon {
@@ -20,7 +23,7 @@ public class MainScreenCon {
     @FXML
     Button openCol;
     @FXML
-    ListView collectionList;
+    ListView<Etikett> collectionList;
     @FXML
     Button nEtikett;
     @FXML
@@ -59,6 +62,14 @@ public class MainScreenCon {
 
         nCol.setOnAction((e) -> newCollection());
         openCol.setOnAction(e -> openCollection());
+
+        appStart.propertyChangeSupport.addPropertyChangeListener(AppStart.COLLECTION, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                listAllEtiketts();
+            }
+        });
+        collectionList.setOnMouseClicked(e -> appStart.getActiveCollection().setActiveEtikett(collectionList.getSelectionModel().getSelectedItem()));
     }
 
     public void newCollection(){
@@ -67,12 +78,13 @@ public class MainScreenCon {
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    if (appStart.activeCollection != null) {
-                        CollectionSaver.writeCollectionToFile(appStart.activeCollection.collection, appStart.activeCollection.saveFile.getAbsolutePath());
+                    if (appStart.getActiveCollection() != null) {
+                        CollectionSaver.writeCollectionToFile(appStart.getActiveCollection().getCollection(), appStart.getActiveCollection().saveFile.getAbsolutePath());
                         System.out.println("saved");
                     }
-                    appStart.activeCollection = new Collection();
-                    appStart.activeCollection.saveFile = cFile;
+                    Collection nC = new Collection();
+                    nC.saveFile = cFile;
+                    appStart.setActiveCollection(nC);
                 }
             };
             appStart.exe.execute(run);
@@ -94,13 +106,14 @@ public class MainScreenCon {
             Runnable run = new Runnable() {
                 @Override
                 public void run() {
-                    if (appStart.activeCollection != null) {
-                        CollectionSaver.writeCollectionToFile(appStart.activeCollection.collection, appStart.activeCollection.saveFile.getAbsolutePath());
+                    if (appStart.getActiveCollection() != null) {
+                        CollectionSaver.writeCollectionToFile(appStart.getActiveCollection().getCollection(), appStart.getActiveCollection().saveFile.getAbsolutePath());
                         System.out.println("saved");
                     }
-                    appStart.activeCollection = new Collection();
-                    appStart.activeCollection.saveFile = cFile;
-                    appStart.activeCollection.collection = CollectionLoader.loadCollection(cFile.getAbsolutePath());
+                    Collection nC = new Collection();
+                    nC.saveFile = cFile;
+                    nC.silentsetCollection(CollectionLoader.loadCollection(cFile.getAbsolutePath()));
+                    appStart.setActiveCollection(nC);
                 }
             };
             appStart.exe.execute(run);
@@ -113,6 +126,27 @@ public class MainScreenCon {
                     alert.showAndWait();
                 }
             });
+        }
+    }
+
+    public void listAllEtiketts(){
+        collectionList.getItems().clear();
+        for (Etikett e: appStart.getActiveCollection().getCollection()){
+            collectionList.getItems().add(e);
+        }
+        appStart.getActiveCollection().propertyChangeSupport.addPropertyChangeListener(Collection.ETIKETT, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                etikettAddDel(propertyChangeEvent);
+            }
+        });
+    }
+
+    public void etikettAddDel(PropertyChangeEvent event){
+        if (event.getOldValue() == null && event.getNewValue() != null){
+            collectionList.getItems().add((Etikett) event.getNewValue());
+        } else if (event.getOldValue() != null && event.getNewValue() == null){
+            collectionList.getItems().remove(event.getOldValue());
         }
     }
 
