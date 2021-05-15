@@ -18,7 +18,7 @@ public class CollectionSaver {
         File ret = createFile(path);
 
         try {
-            FileWriter myWriter = new FileWriter(path+".pclf");
+            FileWriter myWriter = new FileWriter(path);
             myWriter.write(saveString);
             myWriter.close();
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class CollectionSaver {
 
     public static File createFile(String path){
         try {
-            File myObj = new File(path + ".pclf");
+            File myObj = new File(path);
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
             } else {

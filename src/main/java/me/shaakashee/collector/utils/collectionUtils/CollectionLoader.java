@@ -15,7 +15,7 @@ public class CollectionLoader {
     public static String loadFile(String path){
         StringBuilder ret = new StringBuilder();
         try {
-            File myObj = new File(path+".pclf");
+            File myObj = new File(path);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
