@@ -1,6 +1,8 @@
 package me.shaakashee.collector.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Etikett {
     private String fam;
@@ -17,7 +19,8 @@ public class Etikett {
     private String url;
 
     private String pageID;
-    private HashMap<String, String> possiblePages;
+    private String pageTitle;
+    private HashMap<String, String> possiblePages = new HashMap<>();
 
     public static Etikett build(String fam, String gattung, String art, String autor, String name, String fundort, String standort, String leg, String det, String date, String text, String url){
         Etikett etikett = new Etikett();
@@ -135,5 +138,33 @@ public class Etikett {
     @Override
     public String toString(){
         return ((name != null?name + ": ":"Unbenannt: ") + (date != null?date:"kein Datum"));
+    }
+
+    public String getPageID() {
+        return pageID;
+    }
+
+    public void setPageID(String pageID) {
+        this.pageID = pageID;
+    }
+
+    public Set<String> getPageTitles(){
+        return possiblePages.keySet();
+    }
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
+    public String getIdForTitle(String title){
+        return possiblePages.get(title);
+    }
+
+    public void addPPage(String title, String id){
+        possiblePages.put(title, id);
     }
 }

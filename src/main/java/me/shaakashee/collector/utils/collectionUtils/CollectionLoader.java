@@ -39,19 +39,26 @@ public class CollectionLoader {
             JSONObject e = (JSONObject) it.next();
 
             Etikett etikett = Etikett.build(
-            e.getString("fam"),
-            e.getString("gattung"),
-            e.getString("art"),
-            e.getString("autor"),
-            e.getString("name"),
-            e.getString("fundort"),
-            e.getString("standort"),
-            e.getString("leg"),
-            e.getString("det"),
-            e.getString("date"),
-            e.getString("text"),
-            e.getString("url")
+                    (e.has("fam")? e.getString("fam"):null),
+                    (e.has("gattung")?e.getString("gattung"):null),
+                    (e.has("art")?e.getString("art"):null),
+                    (e.has("autor")?e.getString("autor"):null),
+                    (e.has("name")?e.getString("name"):null),
+                    (e.has("fundort")?e.getString("fundort"):null),
+                    (e.has("standort")?e.getString("standort"):null),
+                    (e.has("leg")?e.getString("leg"):null),
+                    (e.has("det")?e.getString("det"):null),
+                    (e.has("date")?e.getString("date"):null),
+                    (e.has("text")?e.getString("text"):null),
+                    (e.has("url")?e.getString("url"):null)
             );
+
+            if (e.has("pageid")){
+                etikett.setPageID(e.getString("pageid"));
+            }
+            if (e.has("pagetitle")){
+                etikett.setPageTitle(e.getString("pagetitle"));
+            }
 
             ret.add(etikett);
         }

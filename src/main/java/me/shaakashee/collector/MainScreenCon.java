@@ -8,15 +8,21 @@ import me.shaakashee.collector.model.Collection;
 import me.shaakashee.collector.model.Etikett;
 import me.shaakashee.collector.utils.collectionUtils.CollectionLoader;
 import me.shaakashee.collector.utils.collectionUtils.CollectionSaver;
+import me.shaakashee.collector.utils.texUtils.TexCaller;
+import me.shaakashee.collector.utils.texUtils.TexWriter;
+import me.shaakashee.collector.utils.wikiUtils.WikiConnector;
+import me.shaakashee.collector.utils.wikiUtils.WikiParser;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainScreenCon {
 
     public AppStart appStart;
     FileChooser collectionChooser = new FileChooser();
+    FileChooser texChooser = new FileChooser();
 
     @FXML
     Button nCol;
@@ -26,6 +32,8 @@ public class MainScreenCon {
     ListView<Etikett> collectionList;
     @FXML
     Button nEtikett;
+    @FXML
+    Button delEtikett;
     @FXML
     TextField fam;
     @FXML
@@ -47,7 +55,7 @@ public class MainScreenCon {
     @FXML
     TextField date;
     @FXML
-    ChoiceBox pageList;
+    ChoiceBox<String> pageList;
     @FXML
     Button refresh;
     @FXML
@@ -59,6 +67,7 @@ public class MainScreenCon {
 
     public void initialize(){
         collectionChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PlantCollectionFile", "*.pclf"));
+        texChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tex-File", "*.tex"));
 
         nCol.setOnAction((e) -> newCollection());
         openCol.setOnAction(e -> openCollection());
@@ -66,10 +75,22 @@ public class MainScreenCon {
         appStart.propertyChangeSupport.addPropertyChangeListener(AppStart.COLLECTION, new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-                listAllEtiketts();
+                Platform.runLater(() -> listAllEtiketts());
             }
         });
         collectionList.setOnMouseClicked(e -> appStart.getActiveCollection().setActiveEtikett(collectionList.getSelectionModel().getSelectedItem()));
+
+        nEtikett.setOnAction(e -> addEtikett());
+        delEtikett.setOnAction(e -> removeEtikett());
+
+        initializeTextFields();
+        initializeWikiChooser();
+
+        refresh.setOnAction(e -> refreshButton());
+
+        save.setOnAction(e -> saveCollection());
+
+        export.setOnAction(e -> exportCollection());
     }
 
     public void newCollection(){
@@ -145,10 +166,154 @@ public class MainScreenCon {
     public void etikettAddDel(PropertyChangeEvent event){
         if (event.getOldValue() == null && event.getNewValue() != null){
             collectionList.getItems().add((Etikett) event.getNewValue());
+            appStart.getActiveCollection().setActiveEtikett((Etikett) event.getNewValue());
+            collectionList.getSelectionModel().selectLast();
         } else if (event.getOldValue() != null && event.getNewValue() == null){
+            collectionList.getSelectionModel().selectFirst();
+            appStart.getActiveCollection().setActiveEtikett(collectionList.getSelectionModel().getSelectedItem());
             collectionList.getItems().remove(event.getOldValue());
         }
     }
 
+    public void addEtikett(){
+        Etikett etikett = new Etikett();
+        appStart.getActiveCollection().addEtikett(etikett);
+    }
 
+    public void removeEtikett(){
+        if (collectionList.getSelectionModel().getSelectedItem() != null) {
+            appStart.getActiveCollection().removeEtikett(collectionList.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    public void initializeTextFields(){
+        fam.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setFam(fam.getText()));
+        gattung.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setGattung(gattung.getText()));
+        art.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setArt(art.getText()));
+        autor.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setAutor(autor.getText()));
+        name.setOnKeyTyped(e -> {
+            appStart.getActiveCollection().getActiveEtikett().setName(name.getText());
+            collectionList.refresh();
+        });
+        fort.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setFundort(fort.getText()));
+        leg.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setLeg(leg.getText()));
+        sort.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setStandort(sort.getText()));
+        det.setOnKeyTyped(e -> appStart.getActiveCollection().getActiveEtikett().setDet(det.getText()));
+        date.setOnKeyTyped(e -> {
+            appStart.getActiveCollection().getActiveEtikett().setDate(date.getText());
+            collectionList.refresh();
+        });
+
+        appStart.propertyChangeSupport.addPropertyChangeListener(AppStart.COLLECTION, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                appStart.getActiveCollection().propertyChangeSupport.addPropertyChangeListener(Collection.ACTIVE, new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        Platform.runLater(() -> {
+                            Etikett e = (Etikett) propertyChangeEvent.getNewValue();
+                            fam.setText((e.getFam()!= null? e.getFam():""));
+                            gattung.setText((e.getGattung()!= null? e.getGattung():""));
+                            art.setText((e.getArt()!= null? e.getArt():""));
+                            autor.setText((e.getAutor()!= null? e.getAutor():""));
+                            name.setText((e.getName()!= null? e.getName():""));
+                            fort.setText((e.getFundort()!= null? e.getFundort():""));
+                            leg.setText((e.getLeg()!= null? e.getLeg():""));
+                            sort.setText((e.getStandort()!= null? e.getStandort():""));
+                            det.setText((e.getDet()!= null? e.getDet():""));
+                            date.setText((e.getDate()!= null? e.getDate():""));
+                            pageText.setText((e.getText()!= null? e.getText():""));
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    public void initializeWikiChooser(){
+        appStart.propertyChangeSupport.addPropertyChangeListener(AppStart.COLLECTION, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                Platform.runLater(() -> pageList.getItems().clear());
+                appStart.getActiveCollection().propertyChangeSupport.addPropertyChangeListener(Collection.ACTIVE, new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                        refreshPages();
+                    }
+                });
+            }
+        });
+
+        pageList.setOnAction(e -> {
+            if (appStart.getActiveCollection() != null && appStart.getActiveCollection().getActiveEtikett() != null) {
+                appStart.getActiveCollection().getActiveEtikett().setPageTitle(pageList.getValue());
+                appStart.getActiveCollection().getActiveEtikett().setPageID(appStart.getActiveCollection().getActiveEtikett().getIdForTitle(pageList.getValue()));
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        String page = WikiConnector.getPageIntroText(new String[]{appStart.getActiveCollection().getActiveEtikett().getPageID()});
+                        ArrayList<WikiParser.pageStruct> p = WikiParser.parseIntroPage(page);
+                        appStart.getActiveCollection().getActiveEtikett().setUrl(p.get(0).url);
+                        appStart.getActiveCollection().getActiveEtikett().setText(p.get(0).text);
+                        Platform.runLater(() -> pageText.setText(p.get(0).text));
+                    }
+                };
+
+                appStart.exe.execute(run);
+            }
+        });
+    }
+
+    public void refreshPages(){
+        Platform.runLater(() -> {
+            pageList.getItems().clear();
+            for (String title: appStart.getActiveCollection().getActiveEtikett().getPageTitles()){
+                pageList.getItems().add(title);
+            }
+
+            if (appStart.getActiveCollection().getActiveEtikett().getPageTitle() != null) {
+                if (pageList.getItems().contains(appStart.getActiveCollection().getActiveEtikett().getPageTitle())) {
+                    pageList.getSelectionModel().select(appStart.getActiveCollection().getActiveEtikett().getPageTitle());
+                }
+            }
+        });
+    }
+
+    public void refreshButton(){
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                Etikett etikett = appStart.getActiveCollection().getActiveEtikett();
+                String result = WikiConnector.getSearchResults(etikett.getArt());
+                ArrayList<String[]> pgs = WikiParser.parsePageSearch(result);
+                for (String[] p: pgs){
+                    etikett.addPPage(p[0], p[1]);
+                }
+                refreshPages();
+            }
+        };
+        appStart.exe.execute(run);
+    }
+
+    public void saveCollection(){
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                CollectionSaver.writeCollectionToFile(appStart.getActiveCollection().getCollection(), appStart.getActiveCollection().saveFile.getAbsolutePath());
+            }
+        };
+        appStart.exe.execute(run);
+    }
+
+    public void exportCollection(){
+        File texFile = texChooser.showSaveDialog(appStart.mainStage);
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                TexWriter.writeCollectionToTex(appStart.getActiveCollection().getCollection(), texFile.getAbsolutePath());
+                TexCaller.callLatex(texFile.getAbsolutePath());
+            }
+        };
+        appStart.exe.execute(run);
+    }
 }

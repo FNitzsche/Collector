@@ -47,6 +47,8 @@ public class CollectionSaver {
             eJson.put("date", e.getDate());
             eJson.put("text", e.getText());
             eJson.put("url", e.getUrl());
+            eJson.put("pageid", e.getPageID());
+            eJson.put("pagetitle", e.getPageTitle());
 
             array.put(eJson);
 

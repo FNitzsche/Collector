@@ -22,6 +22,7 @@ public class AppStart extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        stage.setOnCloseRequest(e -> exe.shutdown());
         mainStage = stage;
         MainScreenCon mainScreenCon = new MainScreenCon();
         mainScreenCon.appStart = this;

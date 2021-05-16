@@ -2,22 +2,29 @@ package me.shaakashee.collector.utils.texUtils;
 
 import me.shaakashee.collector.model.Etikett;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class TexWriter {
+
+    public static final String NOTHING = "---";
 
     public static File writeCollectionToTex(ArrayList<Etikett> etiketts, String path){
 
         String tex = createTexString(etiketts);
 
         File ret = createFile(path);
+
         try {
-            FileWriter myWriter = new FileWriter(path+".tex");
-            myWriter.write(tex);
-            myWriter.close();
+            Writer out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(path), "UTF-8"));
+            out.write(tex);
+            out.close();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -27,7 +34,7 @@ public class TexWriter {
 
     public static File createFile(String path){
         try {
-            File myObj = new File(path + ".tex");
+            File myObj = new File(path);
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
             } else {
@@ -76,45 +83,49 @@ public class TexWriter {
         ret.append("\\begin{multicols*}{2}\n" +
                 "\\vfill\\null\n" +
                 "\\begin{flushright}\n");
-        ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
+        if (etikett.getUrl() != null) {
+            ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
+        }
         ret.append("\\end{flushright}\n" +
                 "\n" +
                 "\\columnbreak\\vspace*{\\fill}\n" +
                 "\\noindent");
 
         ret.append("\\textbf{Familie: } ");
-        ret.append((etikett.getFam().length() > 35? "\\\\\n":"") + etikett.getFam() + "\\\\\n");
+        ret.append((etikett.getFam()!= null? etikett.getFam():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Gattung: } ");
-        ret.append((etikett.getGattung().length() > 35? "\\\\\n":"") + etikett.getGattung() + "\\\\\n");
+        ret.append((etikett.getGattung()!= null? etikett.getGattung():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Art: } ");
-        ret.append((etikett.getArt().length() > 35? "\\\\\n":"") + etikett.getArt() + "\\\\\n");
+        ret.append((etikett.getArt()!= null? etikett.getArt():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Autor: } ");
-        ret.append((etikett.getAutor().length() > 35? "\\\\\n":"") + etikett.getAutor() + "\\\\\n");
+        ret.append((etikett.getAutor()!= null? etikett.getAutor():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Name: } ");
-        ret.append((etikett.getName().length() > 35? "\\\\\n":"") + etikett.getName() + "\\\\\n");
+        ret.append((etikett.getName()!= null? etikett.getName():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Fundort: } ");
-        ret.append((etikett.getFundort().length() > 35? "\\\\\n":"") + etikett.getFundort() + "\\\\\n");
+        ret.append((etikett.getFundort()!= null? etikett.getFundort():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Standort: } ");
-        ret.append((etikett.getStandort().length() > 35? "\\\\\n":"") + etikett.getStandort() + "\\\\\n");
+        ret.append((etikett.getStandort()!= null? etikett.getStandort():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Leg: } ");
-        ret.append((etikett.getLeg().length() > 35? "\\\\\n":"") + etikett.getLeg() + "\\\\\n");
+        ret.append((etikett.getLeg()!= null? etikett.getLeg():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Det: } ");
-        ret.append((etikett.getDet().length() > 35? "\\\\\n":"") + etikett.getDet() + "\\\\\n");
+        ret.append((etikett.getDet()!= null? etikett.getDet():NOTHING) + "\\\\\n");
 
         ret.append("\\textbf{Datum: } ");
-        ret.append((etikett.getDate().length() > 35? "\\\\\n":"") + etikett.getDate() + "\\\\\n");
+        ret.append( (etikett.getDate()!= null? etikett.getDate():NOTHING) + "\\\\\n");
 
-        ret.append("{\\footnotesize ");
-        ret.append(etikett.getText().trim());
-        ret.append("\\footnote{" + formatURL(etikett.getUrl()) + "}\n}");
+        if (etikett.getText() != null && etikett.getUrl() != null) {
+            ret.append("{\\footnotesize ");
+            ret.append(etikett.getText().trim());
+            ret.append("\\footnote{" + formatURL(etikett.getUrl()) + "}\n}");
+        }
 
         ret.append("\\end{multicols*}\n" +
                 "\\newpage");
