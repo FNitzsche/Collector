@@ -14,7 +14,7 @@ public class WikiConnector {
     static final String pageFull = "?format=json&action=query&prop=info%7Cextracts&inprop=url&explaintext&redirects=1&pageids=";
 
     public static String getSearchResults(String term){
-        URI uri = URI.create(wikiURL+searchPart+term);
+        URI uri = URI.create(wikiURL+searchPart+term.replace(" ", "%20"));
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
