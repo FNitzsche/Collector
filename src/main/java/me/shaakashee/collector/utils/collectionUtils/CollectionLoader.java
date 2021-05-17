@@ -62,6 +62,12 @@ public class CollectionLoader {
             if (e.has("pagedate")){
                 etikett.setPageDate(e.getString("pagedate"));
             }
+            if (e.has("famRef")){
+                etikett.setFamRef(e.getString("famRef"));
+            }
+            if (e.has("gRef")){
+                etikett.setgRef(e.getString("gRef"));
+            }
 
             ret.add(etikett);
         }

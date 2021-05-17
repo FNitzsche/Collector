@@ -99,10 +99,10 @@ public class TexWriter {
                 collectionString.append("\\subsection{Gattung: " + gattung.name + "}\n");
                 gattung.requestText();
                 if (gattung.text != null && gattung.url != null && gattung.pagedate != null) {
-                    collectionString.append(gattung.text.trim() + "\n");
+                    collectionString.append(gattung.text.trim());
                     collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + gattung.url) + " , von " + gattung.pagedate + "}\n");
                 }
-                collectionString.append("\\newpage");
+                collectionString.append("\\newpage\n");
                 for (Etikett e: gattung.getSortedLeaves()){
                     collectionString.append(etikettToString(e));
                 }
@@ -163,7 +163,7 @@ public class TexWriter {
         }
 
         ret.append("\\end{multicols*}\n" +
-                "\\newpage");
+                "\\newpage\n");
 
         return ret.toString();
     }

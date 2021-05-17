@@ -50,6 +50,8 @@ public class CollectionSaver {
             eJson.put("pageid", e.getPageID());
             eJson.put("pagetitle", e.getPageTitle());
             eJson.put("pagedate", e.getPageDate());
+            eJson.put("famRef", e.getFamRef());
+            eJson.put("gRef", e.getgRef());
 
             array.put(eJson);
 
