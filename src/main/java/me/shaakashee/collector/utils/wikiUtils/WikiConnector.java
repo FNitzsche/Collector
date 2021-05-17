@@ -1,10 +1,18 @@
 package me.shaakashee.collector.utils.wikiUtils;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 
 public class WikiConnector {
 
@@ -86,6 +94,62 @@ public class WikiConnector {
         }
         assert response != null;
         return response.body();
+    }
+
+    public static HashMap<String, String> getPageHtml(String url){
+        Document wikiPage = null;
+        try {
+            wikiPage = Jsoup.connect(url).url(new URL(url)).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        HashMap<String, String> ret = new HashMap<>();
+
+            if (wikiPage != null && wikiPage.getElementById("Vorlage_Taxobox") != null) {
+                Element taxobox = wikiPage.getElementById("Vorlage_Taxobox");
+
+                StringBuilder person = new StringBuilder();
+                StringBuilder fam = new StringBuilder();
+                StringBuilder gattung = new StringBuilder();
+                StringBuilder name = new StringBuilder();
+
+                for (Element block : taxobox.getElementsByClass("toptextcells").select("tr")) {
+                    String type = block.select("i").first().select("a").first().ownText();
+                    switch (type) {
+                        case "Familie":
+                            fam.append(block.select("td").get(1).ownText());
+                            break;
+                        case "Gattung":
+                            gattung.append(block.select("td").get(1).select("i").first().ownText());
+                            break;
+                    }
+                }
+
+                if (taxobox.select("th").first().ownText() != null) {
+                    name.append(taxobox.select("th").first().ownText());
+                }
+
+                if (taxobox.getElementsByClass("Person").select("a").size() > 0) {
+                    Elements personCell = taxobox.getElementsByClass("Person");
+                    person.append(personCell.select("a").first().ownText());
+                    for (int i = 1; i < personCell.select("a").size(); i++) {
+                        person.append(", " + personCell.select("a").get(i).ownText());
+                    }
+                }
+
+                System.out.println(person);
+                System.out.println(fam.toString().replace("(", "").replace(")", ""));
+                System.out.println(gattung);
+                System.out.println(name);
+
+                ret.put("person", person.toString());
+                ret.put("fam", fam.toString().replace("(", "").replace(")", ""));
+                ret.put("gattung", gattung.toString());
+                ret.put("name", name.toString());
+
+            }
+
+        return  ret;
     }
 
 }

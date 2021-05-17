@@ -16,6 +16,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'org.json:json:20171018'
+    implementation 'org.jsoup:jsoup:1.10.2'
 }
 
 javafx {
