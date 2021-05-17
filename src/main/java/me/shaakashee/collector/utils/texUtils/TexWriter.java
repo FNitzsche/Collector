@@ -92,15 +92,15 @@ public class TexWriter {
             collectionString.append("\\section{Familie: " + fam.name + "}\n");
             fam.requestText();
             if (fam.text != null && fam.url != null && fam.pagedate != null) {
-                collectionString.append(formatURL(fam.text.trim()));
-                collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + fam.url) + " , von " + fam.pagedate + "}\n");
+                collectionString.append(" \\glqq " + formatURL(fam.text.trim()) + " \\grqq ");
+                collectionString.append("\\footnote{woertlich von " + formatURL(WikiConnector.wiki + fam.url).trim() + " , von " + fam.pagedate.trim() + "}\n");
             }
             for (Group gattung: fam.getSortedChildren()){
                 collectionString.append("\\subsection{Gattung: " + gattung.name + "}\n");
                 gattung.requestText();
                 if (gattung.text != null && gattung.url != null && gattung.pagedate != null) {
-                    collectionString.append(formatURL(gattung.text.trim()));
-                    collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + gattung.url) + " , von " + gattung.pagedate + "}\n");
+                    collectionString.append(" \\glqq " + formatURL(gattung.text.trim()) + " \\grqq ");
+                    collectionString.append("\\footnote{woertlich von " + formatURL(WikiConnector.wiki + gattung.url).trim() + " , von " + gattung.pagedate.trim() + "}\n");
                 }
                 collectionString.append("\\newpage\n");
                 for (Etikett e: gattung.getSortedLeaves()){
@@ -108,6 +108,8 @@ public class TexWriter {
                 }
             }
         }
+
+        collectionString.append(createBib(root));
 
         return collectionString.toString();
     }
@@ -118,7 +120,7 @@ public class TexWriter {
         ret.append("\\begin{multicols*}{2}\n" +
                 "\\vfill\\null\n" +
                 "\\begin{flushright}\n");
-        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null) {
+        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
         }
         ret.append("\\end{flushright}\n" +
@@ -156,10 +158,10 @@ public class TexWriter {
         ret.append("\\textbf{Datum: } ");
         ret.append( (etikett.getDate()!= null? etikett.getDate():NOTHING) + "\\\\\n");
 
-        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null) {
+        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("{\\footnotesize ");
-            ret.append(etikett.getText().trim());
-            ret.append("\\footnote{" + formatURL(etikett.getUrl()) + " , von " + etikett.getPageDate() + "}\n}");
+            ret.append(" \\glqq " + formatURL(etikett.getText().trim()) + " \\grqq ");
+            ret.append("\\footnote{woertlich von " + formatURL(etikett.getUrl().trim()) + " , von " + etikett.getPageDate().trim() + "}\n}");
         }
 
         ret.append("\\end{multicols*}\n" +
@@ -172,6 +174,61 @@ public class TexWriter {
         String formatted = url.replace("%", "\\%")
                 .replace("_", "\\_");
         return formatted;
+    }
+
+    public static String createBib(Group root){
+        ArrayList<Source> bib = new ArrayList<>();
+
+        for (Group fam: root.getSortedChildren()){
+            if (fam.text != null && fam.url != null && fam.pagedate != null) {
+                Source source = new Source();
+                source.url = WikiConnector.wiki + fam.url;
+                source.date = fam.pagedate;
+                source.title = fam.name;
+                bib.add(source);
+            }
+            for (Group gattung: fam.getSortedChildren()){
+                if (gattung.text != null && gattung.url != null && gattung.pagedate != null) {
+                    Source source = new Source();
+                    source.url = WikiConnector.wiki + gattung.url;
+                    source.date = gattung.pagedate;
+                    source.title = gattung.name;
+                    bib.add(source);
+                }
+
+                for (Etikett e: gattung.getSortedLeaves()){
+                    if (e.getText() != null && e.getPageTitle() != null && e.getPageDate() != null && e.getUrl() != null){
+                        Source source = new Source();
+                        source.url = e.getUrl();
+                        source.date = e.getPageDate();
+                        source.title = e.getPageTitle();
+                        bib.add(source);
+                    }
+                }
+            }
+        }
+
+        StringBuilder ret = new StringBuilder();
+
+        ret.append("\\section{Literaturverzeichnis}\n");
+        ret.append("\\begin{enumerate}\n");
+
+        bib.stream().sorted((s1, s2) -> s1.title.compareTo(s2.title)).forEach(s -> {
+            ret.append("\\item ");
+            ret.append("\\textit{" + formatURL(s.title) + "}, ");
+            ret.append(formatURL(s.url) + " von ");
+            ret.append(s.date + "\\\\\n");
+        });
+
+        ret.append("\\end{enumerate}");
+
+        return ret.toString();
+    }
+
+    static class Source{
+        public String url;
+        public String date;
+        public String title;
     }
 
 }
