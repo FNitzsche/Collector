@@ -92,14 +92,14 @@ public class TexWriter {
             collectionString.append("\\section{Familie: " + fam.name + "}\n");
             fam.requestText();
             if (fam.text != null && fam.url != null && fam.pagedate != null) {
-                collectionString.append(fam.text.trim());
+                collectionString.append(formatURL(fam.text.trim()));
                 collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + fam.url) + " , von " + fam.pagedate + "}\n");
             }
             for (Group gattung: fam.getSortedChildren()){
                 collectionString.append("\\subsection{Gattung: " + gattung.name + "}\n");
                 gattung.requestText();
                 if (gattung.text != null && gattung.url != null && gattung.pagedate != null) {
-                    collectionString.append(gattung.text.trim());
+                    collectionString.append(formatURL(gattung.text.trim()));
                     collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + gattung.url) + " , von " + gattung.pagedate + "}\n");
                 }
                 collectionString.append("\\newpage\n");

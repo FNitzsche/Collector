@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../../../Collector.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -46,7 +46,7 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Button fx:id="nCol" mnemonicParsing="false" prefHeight="60.0" prefWidth="100.0" text="Neue&#10;Sammlung" textAlignment="CENTER" />
+                        <Button fx:id="nCol" mnemonicParsing="false" prefHeight="60.0" prefWidth="100.0" styleClass="greenButton" text="Neue&#10;Sammlung" textAlignment="CENTER" />
                         <Button fx:id="openCol" layoutX="56.0" layoutY="16.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="100.0" text="Sammlung&#10;öffnen" textAlignment="CENTER" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
@@ -59,8 +59,8 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Button fx:id="nEtikett" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Neuer Eintrag" />
-                        <Button fx:id="delEtikett" layoutX="46.0" layoutY="16.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Eintrag löschen" GridPane.columnIndex="1" />
+                        <Button fx:id="nEtikett" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" styleClass="greenButton" text="Neuer Eintrag" />
+                        <Button fx:id="delEtikett" layoutX="46.0" layoutY="16.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" styleClass="redButton" text="Eintrag löschen" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                </children>
@@ -100,7 +100,7 @@
                               <TextField fx:id="gattung" />
                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" styleClass="green-background" GridPane.rowIndex="1">
                            <children>
                               <Label text="Art" />
                               <TextField fx:id="art" />
@@ -162,7 +162,7 @@
                               <Button fx:id="refresh" mnemonicParsing="false" text="Refresh" />
                            </children>
                         </HBox>
-                        <TextArea fx:id="pageText" editable="false" prefHeight="200.0" prefWidth="200.0" wrapText="true">
+                        <TextArea fx:id="pageText" editable="false" prefHeight="200.0" prefWidth="200.0" styleClass="text-area" wrapText="true">
                            <font>
                               <Font size="18.0" />
                            </font></TextArea>
@@ -188,7 +188,7 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button fx:id="save" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Speichern" />
+                              <Button fx:id="save" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" styleClass="greenButton" text="Speichern" />
                               <Button fx:id="export" layoutX="174.0" layoutY="16.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="Exportieren" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
