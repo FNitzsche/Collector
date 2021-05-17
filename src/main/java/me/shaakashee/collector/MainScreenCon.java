@@ -17,6 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainScreenCon {
 
@@ -251,12 +252,28 @@ public class MainScreenCon {
                 Runnable run = new Runnable() {
                     @Override
                     public void run() {
-                        String page = WikiConnector.getPageIntroText(new String[]{appStart.getActiveCollection().getActiveEtikett().getPageID()});
+                        Etikett etikett = appStart.getActiveCollection().getActiveEtikett();
+                        String page = WikiConnector.getPageIntroText(new String[]{etikett.getPageID()});
                         ArrayList<WikiParser.pageStruct> p = WikiParser.parseIntroPage(page);
-                        appStart.getActiveCollection().getActiveEtikett().setUrl(p.get(0).url);
-                        appStart.getActiveCollection().getActiveEtikett().setText(p.get(0).text);
-                        appStart.getActiveCollection().getActiveEtikett().setPageDate(p.get(0).date);
+                        etikett.setUrl(p.get(0).url);
+                        etikett.setText(p.get(0).text);
+                        etikett.setPageDate(p.get(0).date);
                         Platform.runLater(() -> pageText.setText(p.get(0).text));
+
+                        HashMap<String, String> parsed = WikiConnector.getPageHtml(etikett.getUrl());
+                        etikett.setName(parsed.get("name"));
+                        etikett.setFam(parsed.get("fam"));
+                        etikett.setGattung(parsed.get("gattung"));
+                        etikett.setAutor(parsed.get("person"));
+                        etikett.setArt(parsed.get("wName"));
+
+                        Platform.runLater(() -> {
+                            fam.setText(etikett.getFam());
+                            name.setText(etikett.getName());
+                            gattung.setText(etikett.getGattung());
+                            autor.setText(etikett.getAutor());
+                            art.setText(etikett.getArt());
+                        });
                     }
                 };
 

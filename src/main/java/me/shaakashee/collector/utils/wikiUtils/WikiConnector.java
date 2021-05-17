@@ -112,16 +112,19 @@ public class WikiConnector {
                 StringBuilder fam = new StringBuilder();
                 StringBuilder gattung = new StringBuilder();
                 StringBuilder name = new StringBuilder();
+                StringBuilder wName = new StringBuilder();
 
                 for (Element block : taxobox.getElementsByClass("toptextcells").select("tr")) {
-                    String type = block.select("i").first().select("a").first().ownText();
-                    switch (type) {
-                        case "Familie":
-                            fam.append(block.select("td").get(1).ownText());
-                            break;
-                        case "Gattung":
-                            gattung.append(block.select("td").get(1).select("i").first().ownText());
-                            break;
+                    if (block.select("i").size() > 0 && block.select("i").first().select("a") != null) {
+                        String type = block.select("i").first().select("a").first().ownText();
+                        switch (type) {
+                            case "Familie":
+                                fam.append(block.select("td").get(1).ownText());
+                                break;
+                            case "Gattung":
+                                gattung.append(block.select("td").get(1).select("i").first().ownText());
+                                break;
+                        }
                     }
                 }
 
@@ -137,15 +140,21 @@ public class WikiConnector {
                     }
                 }
 
+                if (taxobox.getElementsByClass("taxo-name").select("i").size() > 0){
+                    wName.append(taxobox.getElementsByClass("taxo-name").select("i").first().ownText());
+                }
+
                 System.out.println(person);
                 System.out.println(fam.toString().replace("(", "").replace(")", ""));
                 System.out.println(gattung);
                 System.out.println(name);
+                System.out.println(wName);
 
                 ret.put("person", person.toString());
                 ret.put("fam", fam.toString().replace("(", "").replace(")", ""));
                 ret.put("gattung", gattung.toString());
                 ret.put("name", name.toString());
+                ret.put("wName", wName.toString());
 
             }
 
