@@ -255,25 +255,29 @@ public class MainScreenCon {
                         Etikett etikett = appStart.getActiveCollection().getActiveEtikett();
                         String page = WikiConnector.getPageIntroText(new String[]{etikett.getPageID()});
                         ArrayList<WikiParser.pageStruct> p = WikiParser.parseIntroPage(page);
-                        etikett.setUrl(p.get(0).url);
-                        etikett.setText(p.get(0).text);
-                        etikett.setPageDate(p.get(0).date);
-                        Platform.runLater(() -> pageText.setText(p.get(0).text));
+                        if (p.size() > 0) {
+                            etikett.setUrl(p.get(0).url);
+                            etikett.setText(p.get(0).text);
+                            etikett.setPageDate(p.get(0).date);
+                            Platform.runLater(() -> pageText.setText(p.get(0).text));
 
-                        HashMap<String, String> parsed = WikiConnector.getPageHtml(etikett.getUrl());
-                        etikett.setName(parsed.get("name"));
-                        etikett.setFam(parsed.get("fam"));
-                        etikett.setGattung(parsed.get("gattung"));
-                        etikett.setAutor(parsed.get("person"));
-                        etikett.setArt(parsed.get("wName"));
+                            HashMap<String, String> parsed = WikiConnector.getPageHtml(etikett.getUrl());
+                            etikett.setName(parsed.get("name"));
+                            etikett.setFam(parsed.get("fam"));
+                            etikett.setGattung(parsed.get("gattung"));
+                            etikett.setAutor(parsed.get("person"));
+                            etikett.setArt(parsed.get("wName"));
+                            etikett.setFamRef(parsed.get("famRef"));
+                            etikett.setgRef(parsed.get("gRef"));
 
-                        Platform.runLater(() -> {
-                            fam.setText(etikett.getFam());
-                            name.setText(etikett.getName());
-                            gattung.setText(etikett.getGattung());
-                            autor.setText(etikett.getAutor());
-                            art.setText(etikett.getArt());
-                        });
+                            Platform.runLater(() -> {
+                                fam.setText(etikett.getFam());
+                                name.setText(etikett.getName());
+                                gattung.setText(etikett.getGattung());
+                                autor.setText(etikett.getAutor());
+                                art.setText(etikett.getArt());
+                            });
+                        }
                     }
                 };
 

@@ -26,7 +26,7 @@ public class WikiParser {
                 ps.text = pages.getJSONObject(page).getString("extract");
                 ps.date = pages.getJSONObject(page).getString("touched");
 
-                System.out.println(ps.text);
+                //System.out.println(ps.text);
 
                 pageList.add(ps);
             }

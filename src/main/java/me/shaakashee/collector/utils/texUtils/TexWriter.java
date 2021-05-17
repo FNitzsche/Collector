@@ -3,6 +3,7 @@ package me.shaakashee.collector.utils.texUtils;
 import me.shaakashee.collector.model.Etikett;
 import me.shaakashee.collector.model.Group;
 import me.shaakashee.collector.utils.collectionUtils.CollectionSorter;
+import me.shaakashee.collector.utils.wikiUtils.WikiConnector;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -89,8 +90,18 @@ public class TexWriter {
 
         for (Group fam: root.getSortedChildren()){
             collectionString.append("\\section{Familie: " + fam.name + "}\n");
+            fam.requestText();
+            if (fam.text != null && fam.url != null && fam.pagedate != null) {
+                collectionString.append(fam.text.trim());
+                collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + fam.url) + " , von " + fam.pagedate + "}\n");
+            }
             for (Group gattung: fam.getSortedChildren()){
                 collectionString.append("\\subsection{Gattung: " + gattung.name + "}\n");
+                gattung.requestText();
+                if (gattung.text != null && gattung.url != null && gattung.pagedate != null) {
+                    collectionString.append(gattung.text.trim() + "\n");
+                    collectionString.append("\\footnote{" + formatURL(WikiConnector.wiki + gattung.url) + " , von " + gattung.pagedate + "}\n");
+                }
                 collectionString.append("\\newpage");
                 for (Etikett e: gattung.getSortedLeaves()){
                     collectionString.append(etikettToString(e));

@@ -23,6 +23,9 @@ public class Etikett {
     private String pageDate;
     private HashMap<String, String> possiblePages = new HashMap<>();
 
+    private String famRef;
+    private String gRef;
+
     public static Etikett build(String fam, String gattung, String art, String autor, String name, String fundort, String standort, String leg, String det, String date, String text, String url){
         Etikett etikett = new Etikett();
         etikett.fam = fam;
@@ -175,5 +178,21 @@ public class Etikett {
 
     public void setPageDate(String pageDate) {
         this.pageDate = pageDate;
+    }
+
+    public String getFamRef() {
+        return famRef;
+    }
+
+    public void setFamRef(String famRef) {
+        this.famRef = famRef;
+    }
+
+    public String getgRef() {
+        return gRef;
+    }
+
+    public void setgRef(String gRef) {
+        this.gRef = gRef;
     }
 }

@@ -12,10 +12,23 @@ public class CollectionSorter {
         root.type = Group.ROOT;
 
         for (Etikett e: etiketts){
+
+            System.out.println((e.getFamRef()!= null?"FRef: " + e.getFamRef():""));
+
             if (root.children.containsKey((e.getFam()!= null? e.getFam(): "Keine Familie"))){
                 Group fam = root.children.get((e.getFam()!= null? e.getFam(): "Keine Familie"));
                 if (fam.children.containsKey((e.getGattung()!= null? e.getGattung(): "Keine Gattung"))){
                     Group gattung = fam.children.get((e.getGattung()!= null? e.getGattung(): "Keine Gattung"));
+                    if (!gattung.name.equals("Keine Gattung") && gattung.url == null){
+                        if (e.getgRef() != null){
+                            gattung.url = e.getgRef();
+                        }
+                    }
+                    if (!fam.name.equals("Keine Familie") && fam.url == null){
+                        if (e.getFamRef() != null){
+                            fam.url = e.getFamRef();
+                        }
+                    }
                     gattung.leaves.add(e);
                 } else {
                     Group gattung = new Group();
@@ -23,6 +36,17 @@ public class CollectionSorter {
                     gattung.name = (e.getGattung()!= null? e.getGattung(): "Keine Gattung");
                     gattung.leaves.add(e);
                     fam.children.put((e.getGattung()!= null? e.getGattung(): "Keine Gattung"), gattung);
+
+                    if (!gattung.name.equals("Keine Gattung") && gattung.url == null){
+                        if (e.getgRef() != null){
+                            gattung.url = e.getgRef();
+                        }
+                    }
+                    if (!fam.name.equals("Keine Familie") && fam.url == null){
+                        if (e.getFamRef() != null){
+                            fam.url = e.getFamRef();
+                        }
+                    }
                 }
             } else {
                 Group fam = new Group();
@@ -35,6 +59,17 @@ public class CollectionSorter {
                 gattung.name = (e.getGattung()!= null? e.getGattung(): "Keine Gattung");
                 gattung.leaves.add(e);
                 fam.children.put((e.getGattung()!= null? e.getGattung(): "Keine Gattung"), gattung);
+
+                if (!gattung.name.equals("Keine Gattung") && gattung.url == null){
+                    if (e.getgRef() != null){
+                        gattung.url = e.getgRef();
+                    }
+                }
+                if (!fam.name.equals("Keine Familie") && fam.url == null){
+                    if (e.getFamRef() != null){
+                        fam.url = e.getFamRef();
+                    }
+                }
             }
         }
 

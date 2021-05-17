@@ -6,12 +6,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.spec.RSAOtherPrimeInfo;
 import java.util.HashMap;
 
 public class WikiConnector {
@@ -20,6 +22,7 @@ public class WikiConnector {
     static final String searchPart = "?action=query&format=json&list=search&srsearch=intitle:";
     static final String pagePart = "?format=json&action=query&prop=info%7Cextracts&inprop=url&explaintext&exintro&redirects=1&pageids=";
     static final String pageFull = "?format=json&action=query&prop=info%7Cextracts&inprop=url&explaintext&redirects=1&pageids=";
+    public static final String wiki = "https://de.wikipedia.org";
 
     public static String getSearchResults(String term){
         URI uri = URI.create(wikiURL+searchPart+term.replace(" ", "%20"));
@@ -110,7 +113,9 @@ public class WikiConnector {
 
                 StringBuilder person = new StringBuilder();
                 StringBuilder fam = new StringBuilder();
+                StringBuilder famRef = new StringBuilder();
                 StringBuilder gattung = new StringBuilder();
+                StringBuilder gRef = new StringBuilder();
                 StringBuilder name = new StringBuilder();
                 StringBuilder wName = new StringBuilder();
 
@@ -120,9 +125,11 @@ public class WikiConnector {
                         switch (type) {
                             case "Familie":
                                 fam.append(block.select("td").get(1).ownText());
+                                famRef.append(block.select("td").get(1).select("a").attr("href"));
                                 break;
                             case "Gattung":
                                 gattung.append(block.select("td").get(1).select("i").first().ownText());
+                                gRef.append(block.select("td").get(1).select("a").first().attr("href"));
                                 break;
                         }
                     }
@@ -155,10 +162,35 @@ public class WikiConnector {
                 ret.put("gattung", gattung.toString());
                 ret.put("name", name.toString());
                 ret.put("wName", wName.toString());
+                ret.put("famRef", famRef.toString());
+                ret.put("gRef", gRef.toString());
 
             }
 
         return  ret;
+    }
+
+    public static String getIdforURL(String url){
+        Document wikipage = null;
+
+        System.out.println(wiki + url);
+
+        try {
+            wikipage = Jsoup.connect(wiki).url(new URL((wiki + url))).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (wikipage != null){
+            String script = wikipage.head().select("script").toString();
+            String cut = script.substring(script.indexOf("wgArticleId"));
+            String c2 = cut.substring(cut.indexOf(":")+1, cut.indexOf(","));
+            return c2;
+        } else {
+            System.out.println("page null");
+        }
+
+        return "";
     }
 
 }
