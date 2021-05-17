@@ -11,26 +11,25 @@ import java.util.Iterator;
 public class WikiParser {
 
     public static ArrayList<pageStruct> parseIntroPage(String json){
-
-
+        ArrayList<pageStruct> pageList = new ArrayList<>();
         //JSONObject root = new JSONObject(replaceUmlaute(json));
         JSONObject root = new JSONObject((json));
 
-        JSONObject pages = root.getJSONObject("query").getJSONObject("pages");
-        ArrayList<pageStruct> pageList = new ArrayList<>();
-        for (Iterator<String> it = pages.keys(); it.hasNext(); ) {
-            String page = it.next();
-            pageStruct ps = new pageStruct();
+        if (root.has("query")) {
+            JSONObject pages = root.getJSONObject("query").getJSONObject("pages");
+            for (Iterator<String> it = pages.keys(); it.hasNext(); ) {
+                String page = it.next();
+                pageStruct ps = new pageStruct();
 
-            ps.url = new String(pages.getJSONObject(page).getString("fullurl"));
-            ps.title = pages.getJSONObject(page).getString("title");
-            ps.text = pages.getJSONObject(page).getString("extract");
+                ps.url = new String(pages.getJSONObject(page).getString("fullurl"));
+                ps.title = pages.getJSONObject(page).getString("title");
+                ps.text = pages.getJSONObject(page).getString("extract");
+                ps.date = pages.getJSONObject(page).getString("touched");
 
-            System.out.println(ps.text);
+                System.out.println(ps.text);
 
-            //ps.title = pages.getJSONObject(page).getString("title");
-            //ps.text = pages.getJSONObject(page).getString("extract");
-            pageList.add(ps);
+                pageList.add(ps);
+            }
         }
         return pageList;
     }
@@ -55,6 +54,7 @@ public class WikiParser {
         public String title;
         public String url;
         public String text;
+        public String date;
     }
 
     private static String replaceUmlaute(String output) {

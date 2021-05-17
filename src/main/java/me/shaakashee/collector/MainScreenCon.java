@@ -255,6 +255,7 @@ public class MainScreenCon {
                         ArrayList<WikiParser.pageStruct> p = WikiParser.parseIntroPage(page);
                         appStart.getActiveCollection().getActiveEtikett().setUrl(p.get(0).url);
                         appStart.getActiveCollection().getActiveEtikett().setText(p.get(0).text);
+                        appStart.getActiveCollection().getActiveEtikett().setPageDate(p.get(0).date);
                         Platform.runLater(() -> pageText.setText(p.get(0).text));
                     }
                 };

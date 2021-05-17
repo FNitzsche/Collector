@@ -59,6 +59,9 @@ public class CollectionLoader {
             if (e.has("pagetitle")){
                 etikett.setPageTitle(e.getString("pagetitle"));
             }
+            if (e.has("pagedate")){
+                etikett.setPageDate(e.getString("pagedate"));
+            }
 
             ret.add(etikett);
         }

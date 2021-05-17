@@ -83,7 +83,7 @@ public class TexWriter {
         ret.append("\\begin{multicols*}{2}\n" +
                 "\\vfill\\null\n" +
                 "\\begin{flushright}\n");
-        if (etikett.getUrl() != null) {
+        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null) {
             ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
         }
         ret.append("\\end{flushright}\n" +
@@ -121,10 +121,10 @@ public class TexWriter {
         ret.append("\\textbf{Datum: } ");
         ret.append( (etikett.getDate()!= null? etikett.getDate():NOTHING) + "\\\\\n");
 
-        if (etikett.getText() != null && etikett.getUrl() != null) {
+        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null) {
             ret.append("{\\footnotesize ");
             ret.append(etikett.getText().trim());
-            ret.append("\\footnote{" + formatURL(etikett.getUrl()) + "}\n}");
+            ret.append("\\footnote{" + formatURL(etikett.getUrl()) + " , von " + etikett.getPageDate() + "}\n}");
         }
 
         ret.append("\\end{multicols*}\n" +

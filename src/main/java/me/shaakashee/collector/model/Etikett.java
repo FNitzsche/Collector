@@ -20,6 +20,7 @@ public class Etikett {
 
     private String pageID;
     private String pageTitle;
+    private String pageDate;
     private HashMap<String, String> possiblePages = new HashMap<>();
 
     public static Etikett build(String fam, String gattung, String art, String autor, String name, String fundort, String standort, String leg, String det, String date, String text, String url){
@@ -166,5 +167,13 @@ public class Etikett {
 
     public void addPPage(String title, String id){
         possiblePages.put(title, id);
+    }
+
+    public String getPageDate() {
+        return pageDate;
+    }
+
+    public void setPageDate(String pageDate) {
+        this.pageDate = pageDate;
     }
 }

@@ -40,4 +40,8 @@ public class AppStart extends Application {
         this.activeCollection = activeCollection;
         propertyChangeSupport.firePropertyChange(COLLECTION, old, this.activeCollection);
     }
+
+    public static void main(String[] args){
+        launch(args);
+    }
 }
