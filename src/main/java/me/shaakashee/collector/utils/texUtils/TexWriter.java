@@ -1,6 +1,8 @@
 package me.shaakashee.collector.utils.texUtils;
 
 import me.shaakashee.collector.model.Etikett;
+import me.shaakashee.collector.model.Group;
+import me.shaakashee.collector.utils.collectionUtils.CollectionSorter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -67,14 +69,36 @@ public class TexWriter {
                 "\\usepackage{qrcode}\n");
 
         ret.append("\\begin{document}\n");
+        ret.append("\\tableofcontents\n");
+        ret.append("\\newpage\n");
 
-        for (Etikett e: etiketts){
+        /*for (Etikett e: etiketts){
             ret.append(etikettToString(e));
-        }
+        }*/
+        ret.append(collectionToString(etiketts));
 
         ret.append("\\end{document}");
 
         return ret.toString();
+    }
+
+    public static String collectionToString(ArrayList<Etikett> etiketts){
+        Group root = CollectionSorter.sortCollection(etiketts);
+
+        StringBuilder collectionString = new StringBuilder();
+
+        for (Group fam: root.getSortedChildren()){
+            collectionString.append("\\section{Familie: " + fam.name + "}\n");
+            for (Group gattung: fam.getSortedChildren()){
+                collectionString.append("\\subsection{Gattung: " + gattung.name + "}\n");
+                collectionString.append("\\newpage");
+                for (Etikett e: gattung.getSortedLeaves()){
+                    collectionString.append(etikettToString(e));
+                }
+            }
+        }
+
+        return collectionString.toString();
     }
 
     public static String etikettToString(Etikett etikett){
