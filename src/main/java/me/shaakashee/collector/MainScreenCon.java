@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import me.shaakashee.collector.model.Collection;
 import me.shaakashee.collector.model.Etikett;
 import me.shaakashee.collector.utils.collectionUtils.CollectionLoader;
@@ -24,6 +25,9 @@ public class MainScreenCon {
     public AppStart appStart;
     FileChooser collectionChooser = new FileChooser();
     FileChooser texChooser = new FileChooser();
+
+    public ExportScreenCon exportScreenCon = new ExportScreenCon();
+    public Stage exportStage;
 
     @FXML
     Button nCol;
@@ -67,6 +71,7 @@ public class MainScreenCon {
     Button export;
 
     public void initialize(){
+        exportScreenCon.mainScreenCon = this;
         collectionChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PlantCollectionFile", "*.pclf"));
         texChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tex-File", "*.tex"));
 
@@ -91,7 +96,10 @@ public class MainScreenCon {
 
         save.setOnAction(e -> saveCollection());
 
-        export.setOnAction(e -> exportCollection());
+        export.setOnAction(e -> {
+            exportStage.show();
+            exportStage.toFront();
+        });
     }
 
     public void newCollection(){
@@ -327,12 +335,15 @@ public class MainScreenCon {
         appStart.exe.execute(run);
     }
 
-    public void exportCollection(){
+    public void exportCollection(String documentclass, String borders,
+                                   Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
+                                   Boolean showPageNumbers){
         File texFile = texChooser.showSaveDialog(appStart.mainStage);
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                TexWriter.writeCollectionToTex(appStart.getActiveCollection().getCollection(), texFile.getAbsolutePath());
+                TexWriter.writeCollectionToTex(appStart.getActiveCollection().getCollection(), texFile.getAbsolutePath(),
+                        documentclass, borders, showTableOfContents, generateQRCodes, showFamilie, showGattung, showPageNumbers);
                 TexCaller.callLatex(texFile.getAbsolutePath());
             }
         };

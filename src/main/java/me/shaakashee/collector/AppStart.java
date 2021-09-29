@@ -15,6 +15,7 @@ public class AppStart extends Application {
     public PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     FXMLLoad mainScreen;
+    FXMLLoad exportScreen;
 
     private Collection activeCollection;
     public Stage mainStage;
@@ -22,13 +23,28 @@ public class AppStart extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Stage exportStage = new Stage();
+
         stage.setTitle("Collector");
-        stage.setOnCloseRequest(e -> exe.shutdown());
+        stage.setOnCloseRequest(e -> {
+            exe.shutdown();
+            exportStage.close();
+        });
         mainStage = stage;
         MainScreenCon mainScreenCon = new MainScreenCon();
         mainScreenCon.appStart = this;
         mainScreen = new FXMLLoad("/me/shaakashee/collector/mainScreen.fxml", mainScreenCon);
         stage.setScene(mainScreen.getScene());
+
+        ExportScreenCon exportScreenCon = new ExportScreenCon();
+        exportScreenCon.exportStage = exportStage;
+        exportScreenCon.mainScreenCon = mainScreenCon;
+        exportScreen = new FXMLLoad("/me/shaakashee/collector/exportScreen.fxml", exportScreenCon);
+        exportStage.setScene(exportScreen.getScene());
+
+        mainScreenCon.exportStage = exportStage;
+        mainScreenCon.exportScreenCon = exportScreenCon;
+
         stage.show();
     }
 
