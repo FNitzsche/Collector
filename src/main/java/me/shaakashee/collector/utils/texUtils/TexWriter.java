@@ -54,7 +54,7 @@ public class TexWriter {
     public static String createTexString(ArrayList<Etikett> etiketts){
         StringBuilder ret = new StringBuilder();
 
-        ret.append("\\documentclass[12pt,a4paper]{article}\n" +
+        ret.append("\\documentclass[landscape,12pt,a5paper]{article}\n" +
                 "\\usepackage[utf8]{inputenc}\n" +
                 "\\usepackage[german]{babel}\n" +
                 "\\usepackage[T1]{fontenc}\n" +
@@ -135,6 +135,8 @@ public class TexWriter {
 
         ret.append("\\textbf{Datum: } ");
         ret.append( (etikett.getDate()!= null? etikett.getDate():NOTHING) + "\\\\\n");
+
+        ret.append("\\vspace{1em} \n");
 
         if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
