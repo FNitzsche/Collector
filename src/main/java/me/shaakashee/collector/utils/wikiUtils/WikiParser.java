@@ -1,10 +1,8 @@
 package me.shaakashee.collector.utils.wikiUtils;
-import jdk.vm.ci.code.stack.StackIntrospection;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 

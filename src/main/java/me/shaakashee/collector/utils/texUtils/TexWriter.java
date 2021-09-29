@@ -120,6 +120,22 @@ public class TexWriter {
         ret.append("\\begin{multicols*}{2}\n" +
                 "\\vfill\\null\n" +
                 "\\begin{flushright}\n");
+
+        ret.append("\\textbf{Fundort: } ");
+        ret.append((etikett.getFundort()!= null? etikett.getFundort():NOTHING) + "\\\\\n");
+
+        ret.append("\\textbf{Standort: } ");
+        ret.append((etikett.getStandort()!= null? etikett.getStandort():NOTHING) + "\\\\\n");
+
+        ret.append("\\textbf{Leg: } ");
+        ret.append((etikett.getLeg()!= null? etikett.getLeg():NOTHING) + "\\\\\n");
+
+        ret.append("\\textbf{Det: } ");
+        ret.append((etikett.getDet()!= null? etikett.getDet():NOTHING) + "\\\\\n");
+
+        ret.append("\\textbf{Datum: } ");
+        ret.append( (etikett.getDate()!= null? etikett.getDate():NOTHING) + "\\\\\n");
+
         if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
         }
@@ -142,21 +158,6 @@ public class TexWriter {
 
         ret.append("\\textbf{Name: } ");
         ret.append((etikett.getName()!= null? etikett.getName():NOTHING) + "\\\\\n");
-
-        ret.append("\\textbf{Fundort: } ");
-        ret.append((etikett.getFundort()!= null? etikett.getFundort():NOTHING) + "\\\\\n");
-
-        ret.append("\\textbf{Standort: } ");
-        ret.append((etikett.getStandort()!= null? etikett.getStandort():NOTHING) + "\\\\\n");
-
-        ret.append("\\textbf{Leg: } ");
-        ret.append((etikett.getLeg()!= null? etikett.getLeg():NOTHING) + "\\\\\n");
-
-        ret.append("\\textbf{Det: } ");
-        ret.append((etikett.getDet()!= null? etikett.getDet():NOTHING) + "\\\\\n");
-
-        ret.append("\\textbf{Datum: } ");
-        ret.append( (etikett.getDate()!= null? etikett.getDate():NOTHING) + "\\\\\n");
 
         if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("{\\footnotesize ");
