@@ -251,8 +251,8 @@ public class TexWriter {
 
         bib.stream().sorted((s1, s2) -> s1.title.compareTo(s2.title)).forEach(s -> {
             ret.append("\\item ");
-            ret.append("\\textit{" + formatURL(s.title) + "}, ");
-            ret.append(formatURL(s.url) + "\\\\\n aufgerufen am ");
+            ret.append("\\textit{" + formatURL(s.title) + "}, \\\\\n ");
+            ret.append("\\url{" + formatURL(s.url) + "}\\\\\n aufgerufen am ");
             ret.append(s.date + "\\\\\n");
         });
 
