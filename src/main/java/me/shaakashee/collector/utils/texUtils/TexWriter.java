@@ -12,6 +12,8 @@ import java.util.ArrayList;
 public class TexWriter {
 
     public static final String NOTHING = "\\line(1,0){150}\n \\end{spacing}";
+    public static final String NOTHINGSMALL = "\\line(1,0){75}\n \\end{spacing}";
+    public static final String a6 = "a6paper";
 
     public static File writeCollectionToTex(ArrayList<Etikett> etiketts, String path, String documentclass, String borders,
                                             Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
@@ -56,6 +58,8 @@ public class TexWriter {
     public static String createTexString(ArrayList<Etikett> etiketts, String documentclass, String borders,
                                          Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
                                          Boolean showPageNumbers){
+        boolean small = documentclass.contains(a6);
+
         StringBuilder ret = new StringBuilder();
 
         ret.append("\\documentclass[12pt,a4paper]{article}\n" +
@@ -72,6 +76,7 @@ public class TexWriter {
                 "\\usepackage{multicol}\n" +
                 "\\usepackage{setspace}\n" +
                 "\\usepackage[" + documentclass + ", " + borders + "]{geometry}\n" +
+                "\\usepackage[hyphens]{url}\n" +
                 "\\usepackage{qrcode}\n");
 
         ret.append("\\begin{document}\n");
@@ -85,14 +90,14 @@ public class TexWriter {
             ret.append("\\newpage\n");
         }
 
-        ret.append(collectionToString(etiketts, generateQRCodes, showFamilie, showGattung));
+        ret.append(collectionToString(small, etiketts, generateQRCodes, showFamilie, showGattung));
 
         ret.append("\\end{document}");
 
         return ret.toString();
     }
 
-    public static String collectionToString(ArrayList<Etikett> etiketts, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung){
+    public static String collectionToString(boolean small, ArrayList<Etikett> etiketts, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung){
         Group root = CollectionSorter.sortCollection(etiketts);
 
         StringBuilder collectionString = new StringBuilder();
@@ -103,7 +108,7 @@ public class TexWriter {
                 fam.requestText();
                 if (fam.text != null && fam.url != null && fam.pagedate != null) {
                     collectionString.append(" \\glqq " + formatURL(fam.text.trim()) + " \\grqq ");
-                    collectionString.append("\\footnote{woertlich von " + formatURL(WikiConnector.wiki + fam.url).trim() + " , von " + fam.pagedate.trim() + "}\n");
+                    collectionString.append("\\footnote{woertlich von \\url{" + formatURL(WikiConnector.wiki + fam.url).trim() + "} , von " + fam.pagedate.trim() + "}\n");
                 }
             }
             for (Group gattung: fam.getSortedChildren()){
@@ -112,12 +117,12 @@ public class TexWriter {
                     gattung.requestText();
                     if (gattung.text != null && gattung.url != null && gattung.pagedate != null) {
                         collectionString.append(" \\glqq " + formatURL(gattung.text.trim()) + " \\grqq ");
-                        collectionString.append("\\footnote{woertlich von " + formatURL(WikiConnector.wiki + gattung.url).trim() + " , von " + gattung.pagedate.trim() + "}\n");
+                        collectionString.append("\\footnote{woertlich von \\url{" + formatURL(WikiConnector.wiki + gattung.url).trim() + "} , von " + gattung.pagedate.trim() + "}\n");
                     }
                 }
                 collectionString.append("\\newpage\n");
                 for (Etikett e: gattung.getSortedLeaves()){
-                    collectionString.append(etikettToString(e, generateQRCodes));
+                    collectionString.append(etikettToString(small, e, generateQRCodes));
                 }
             }
         }
@@ -127,32 +132,35 @@ public class TexWriter {
         return collectionString.toString();
     }
 
-    public static String etikettToString(Etikett etikett,  Boolean generateQRCodes){
+    public static String etikettToString(boolean small, Etikett etikett,  Boolean generateQRCodes){
         StringBuilder ret = new StringBuilder();
+
+        String spacing = (small? "1":"2");
+        String length = (small?NOTHINGSMALL:NOTHING);
 
         ret.append("\\begin{multicols*}{2}\n" +
                 "\\vfill\\null\n" +
                 "\\begin{flushright}\n");
 
-        ret.append((etikett.getFundort()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getFundort()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Fundort: } ");
-        ret.append((etikett.getFundort()!= null? etikett.getFundort() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getFundort()!= null? etikett.getFundort() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getStandort()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getStandort()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Standort: } ");
-        ret.append((etikett.getStandort()!= null? etikett.getStandort() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getStandort()!= null? etikett.getStandort() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getLeg()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getLeg()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Leg: } ");
-        ret.append((etikett.getLeg()!= null? etikett.getLeg() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getLeg()!= null? etikett.getLeg() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getDet()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getDet()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Det: } ");
-        ret.append((etikett.getDet()!= null? etikett.getDet() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getDet()!= null? etikett.getDet() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getDate()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getDate()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Datum: } ");
-        ret.append( (etikett.getDate()!= null? etikett.getDate() + "\\\\":NOTHING) + "\n");
+        ret.append( (etikett.getDate()!= null? etikett.getDate() + "\\\\":length) + "\n");
 
         ret.append("\\vspace{1em} \n");
 
@@ -164,31 +172,31 @@ public class TexWriter {
                 "\\columnbreak\\vspace*{\\fill}\n" +
                 "\\noindent");
 
-        ret.append((etikett.getFam()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getFam()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Familie: } ");
-        ret.append((etikett.getFam()!= null? etikett.getFam() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getFam()!= null? etikett.getFam() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getGattung()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getGattung()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Gattung: } ");
-        ret.append((etikett.getGattung()!= null? etikett.getGattung() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getGattung()!= null? etikett.getGattung() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getArt()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getArt()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Art: } ");
-        ret.append((etikett.getArt()!= null? etikett.getArt() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getArt()!= null? etikett.getArt() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getAutor()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getAutor()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Autor: } ");
-        ret.append((etikett.getAutor()!= null? etikett.getAutor() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getAutor()!= null? etikett.getAutor() + "\\\\":length) + "\n");
 
-        ret.append((etikett.getName()!= null?"":"\\begin{spacing}{2}\n"));
+        ret.append((etikett.getName()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Name: } ");
-        ret.append((etikett.getName()!= null? etikett.getName() + "\\\\":NOTHING) + "\n");
+        ret.append((etikett.getName()!= null? etikett.getName() + "\\\\":length) + "\n");
 
         if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
-            ret.append("{\\footnotesize \n ");
+            ret.append("{\\" + (small?"scriptsize":"footnotesize") + "\n ");
             ret.append("\\begin{spacing}{0.5} \n");
             ret.append(" \\glqq " + formatURL(etikett.getText().trim()) + " \\grqq ");
-            ret.append("\\footnote{woertlich von " + formatURL(etikett.getUrl().trim()) + " , von " + etikett.getPageDate().trim() + "}\n");
+            ret.append("\\footnote{woertlich von \\url{" + formatURL(etikett.getUrl().trim()) + "} , von " + etikett.getPageDate().trim() + "}\n");
             ret.append("\\end{spacing}} \n");
         }
 
