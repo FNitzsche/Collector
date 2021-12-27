@@ -17,9 +17,9 @@ public class TexWriter {
 
     public static File writeCollectionToTex(ArrayList<Etikett> etiketts, String path, String documentclass, String borders,
                                             Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
-                                            Boolean showPageNumbers){
+                                            Boolean showPlantDescription, Boolean showPageNumbers){
 
-        String tex = createTexString(etiketts, documentclass, borders, showTableOfContents, generateQRCodes, showFamilie, showGattung, showPageNumbers);
+        String tex = createTexString(etiketts, documentclass, borders, showTableOfContents, generateQRCodes, showFamilie, showGattung, showPlantDescription, showPageNumbers);
 
         File ret = createFile(path);
 
@@ -57,7 +57,7 @@ public class TexWriter {
 
     public static String createTexString(ArrayList<Etikett> etiketts, String documentclass, String borders,
                                          Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
-                                         Boolean showPageNumbers){
+                                         Boolean showPlantDescription, Boolean showPageNumbers){
         boolean small = documentclass.contains(a6);
 
         StringBuilder ret = new StringBuilder();
@@ -75,6 +75,7 @@ public class TexWriter {
                 "\\usepackage{kpfonts}\n" +
                 "\\usepackage{multicol}\n" +
                 "\\usepackage{setspace}\n" +
+                "\\usepackage{microtype}\n" +
                 "\\usepackage[" + documentclass + ", " + borders + "]{geometry}\n" +
                 "\\usepackage[hyphens]{url}\n" +
                 "\\usepackage{qrcode}\n");
@@ -90,14 +91,14 @@ public class TexWriter {
             ret.append("\\newpage\n");
         }
 
-        ret.append(collectionToString(small, etiketts, generateQRCodes, showFamilie, showGattung));
+        ret.append(collectionToString(small, etiketts, generateQRCodes, showFamilie, showGattung, showPlantDescription));
 
         ret.append("\\end{document}");
 
         return ret.toString();
     }
 
-    public static String collectionToString(boolean small, ArrayList<Etikett> etiketts, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung){
+    public static String collectionToString(boolean small, ArrayList<Etikett> etiketts, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung, Boolean showPlantDescription){
         Group root = CollectionSorter.sortCollection(etiketts);
 
         StringBuilder collectionString = new StringBuilder();
@@ -122,7 +123,7 @@ public class TexWriter {
                 }
                 collectionString.append("\\newpage\n");
                 for (Etikett e: gattung.getSortedLeaves()){
-                    collectionString.append(etikettToString(small, e, generateQRCodes));
+                    collectionString.append(etikettToString(small, e, generateQRCodes, showPlantDescription));
                 }
             }
         }
@@ -132,7 +133,7 @@ public class TexWriter {
         return collectionString.toString();
     }
 
-    public static String etikettToString(boolean small, Etikett etikett,  Boolean generateQRCodes){
+    public static String etikettToString(boolean small, Etikett etikett,  Boolean generateQRCodes, Boolean showPlantDescription){
         StringBuilder ret = new StringBuilder();
 
         String spacing = (small? "1":"2");
@@ -142,24 +143,27 @@ public class TexWriter {
                 "\\vfill\\null\n" +
                 "\\begin{flushright}\n");
 
+        if (small){
+            ret.append("\\begin{small}\n");
+        }
         ret.append((etikett.getFundort()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Fundort: } ");
+        ret.append("\\textbf{Fundort: \\\\} ");
         ret.append((etikett.getFundort()!= null? etikett.getFundort() + "\\\\":length) + "\n");
 
         ret.append((etikett.getStandort()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Standort: } ");
+        ret.append("\\textbf{Standort: \\\\} ");
         ret.append((etikett.getStandort()!= null? etikett.getStandort() + "\\\\":length) + "\n");
 
         ret.append((etikett.getLeg()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Leg: } ");
+        ret.append("\\textbf{Leg: \\\\} ");
         ret.append((etikett.getLeg()!= null? etikett.getLeg() + "\\\\":length) + "\n");
 
         ret.append((etikett.getDet()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Det: } ");
+        ret.append("\\textbf{Det: \\\\} ");
         ret.append((etikett.getDet()!= null? etikett.getDet() + "\\\\":length) + "\n");
 
         ret.append((etikett.getDate()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Datum: } ");
+        ret.append("\\textbf{Datum: \\\\} ");
         ret.append( (etikett.getDate()!= null? etikett.getDate() + "\\\\":length) + "\n");
 
         ret.append("\\vspace{1em} \n");
@@ -167,32 +171,45 @@ public class TexWriter {
         if (generateQRCodes && etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("\\qrcode{" + etikett.getUrl() + "}\n");
         }
+
+        if (small){
+            ret.append("\\end{small}\n");
+        }
+
         ret.append("\\end{flushright}\n" +
                 "\n" +
                 "\\columnbreak\\vspace*{\\fill}\n" +
                 "\\noindent");
 
+        if (small){
+            ret.append("\\begin{small}\n");
+        }
+
         ret.append((etikett.getFam()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Familie: } ");
+        ret.append("\\textbf{Familie: \\\\} ");
         ret.append((etikett.getFam()!= null? etikett.getFam() + "\\\\":length) + "\n");
 
         ret.append((etikett.getGattung()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Gattung: } ");
+        ret.append("\\textbf{Gattung: \\\\} ");
         ret.append((etikett.getGattung()!= null? etikett.getGattung() + "\\\\":length) + "\n");
 
         ret.append((etikett.getArt()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Art: } ");
+        ret.append("\\textbf{Art: \\\\} ");
         ret.append((etikett.getArt()!= null? etikett.getArt() + "\\\\":length) + "\n");
 
         ret.append((etikett.getAutor()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Autor: } ");
+        ret.append("\\textbf{Autor: \\\\} ");
         ret.append((etikett.getAutor()!= null? etikett.getAutor() + "\\\\":length) + "\n");
 
         ret.append((etikett.getName()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
-        ret.append("\\textbf{Name: } ");
+        ret.append("\\textbf{Name: \\\\} ");
         ret.append((etikett.getName()!= null? etikett.getName() + "\\\\":length) + "\n");
 
-        if (etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
+        if (small){
+            ret.append("\\end{small}\n");
+        }
+
+        if (showPlantDescription && etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
             ret.append("{\\" + (small?"scriptsize":"footnotesize") + "\n ");
             ret.append("\\begin{spacing}{0.5} \n");
             ret.append(" \\glqq " + formatURL(etikett.getText().trim()) + " \\grqq ");
@@ -247,11 +264,13 @@ public class TexWriter {
         StringBuilder ret = new StringBuilder();
 
         ret.append("\\section{Literaturverzeichnis}\n");
+        ret.append("\\sloppy\n");
         ret.append("\\begin{enumerate}\n");
 
         bib.stream().sorted((s1, s2) -> s1.title.compareTo(s2.title)).forEach(s -> {
             ret.append("\\item ");
-            ret.append("\\textit{" + formatURL(s.title) + "}, \\\\\n ");
+            ret.append("\\textit{" + formatURL(s.title) + "}, \\\\\n" +
+                    " ");
             ret.append("\\url{" + formatURL(s.url) + "}\\\\\n aufgerufen am ");
             ret.append(s.date + "\\\\\n");
         });

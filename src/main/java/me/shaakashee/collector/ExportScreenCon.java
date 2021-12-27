@@ -35,6 +35,8 @@ public class ExportScreenCon {
     @FXML
     CheckBox gatGen;
     @FXML
+    CheckBox plantGen;
+    @FXML
     CheckBox numGen;
 
     @FXML
@@ -59,6 +61,7 @@ public class ExportScreenCon {
         qGen.setSelected(true);
         famGen.setSelected(true);
         gatGen.setSelected(true);
+        plantGen.setSelected(true);
         numGen.setSelected(true);
 
         ok.setOnAction((e) -> callExport());
@@ -69,7 +72,7 @@ public class ExportScreenCon {
         String documentclass = eSize.getValue() + ", " + eOrient.getValue();
         String borders = "left=" + bL.getText() + "cm,right=" + bR.getText() + "cm,top=" + bO.getText() + "cm,bottom=" + bU.getText() + "cm";
         mainScreenCon.exportCollection(documentclass, borders, iGen.isSelected(), qGen.isSelected(),
-                famGen.isSelected(), gatGen.isSelected(), numGen.isSelected());
+                famGen.isSelected(), gatGen.isSelected(), plantGen.isSelected(), numGen.isSelected());
     }
 
 }

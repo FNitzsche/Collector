@@ -337,13 +337,13 @@ public class MainScreenCon {
 
     public void exportCollection(String documentclass, String borders,
                                    Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
-                                   Boolean showPageNumbers){
+                                   Boolean showPlantDescription, Boolean showPageNumbers){
         File texFile = texChooser.showSaveDialog(appStart.mainStage);
         Runnable run = new Runnable() {
             @Override
             public void run() {
                 TexWriter.writeCollectionToTex(appStart.getActiveCollection().getCollection(), texFile.getAbsolutePath(),
-                        documentclass, borders, showTableOfContents, generateQRCodes, showFamilie, showGattung, showPageNumbers);
+                        documentclass, borders, showTableOfContents, generateQRCodes, showFamilie, showGattung, showPlantDescription, showPageNumbers);
                 TexCaller.callLatex(texFile.getAbsolutePath());
             }
         };
