@@ -314,6 +314,7 @@ public class MainScreenCon {
             @Override
             public void run() {
                 Etikett etikett = appStart.getActiveCollection().getActiveEtikett();
+                etikett.clearPPages();
                 String result = WikiConnector.getSearchResults(etikett.getArt());
                 ArrayList<String[]> pgs = WikiParser.parsePageSearch(result);
                 for (String[] p: pgs){

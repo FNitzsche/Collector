@@ -195,4 +195,8 @@ public class Etikett {
     public void setgRef(String gRef) {
         this.gRef = gRef;
     }
+
+    public void  clearPPages(){
+        possiblePages.clear();
+    }
 }
