@@ -33,7 +33,7 @@ public class Group {
     }
 
     public void requestText(){
-        if (url != null){
+        if (url != null && !url.contains("redlink=1")){
             pageid = WikiConnector.getIdforURL(url);
             WikiParser.pageStruct page = WikiParser.parseIntroPage(WikiConnector.getPageIntroText(new String[]{pageid})).get(0);
             pagedate = page.date;
