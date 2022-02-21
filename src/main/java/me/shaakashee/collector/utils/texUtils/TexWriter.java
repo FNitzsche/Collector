@@ -14,6 +14,7 @@ public class TexWriter {
     public static final String NOTHING = "\\line(1,0){150}\n \\end{spacing}";
     public static final String NOTHINGSMALL = "\\line(1,0){75}\n \\end{spacing}";
     public static final String a6 = "a6paper";
+    public static final String a5 = "a5paper";
 
     public static File writeCollectionToTex(ArrayList<Etikett> etiketts, String path, String documentclass, String borders,
                                             Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
@@ -58,7 +59,7 @@ public class TexWriter {
     public static String createTexString(ArrayList<Etikett> etiketts, String documentclass, String borders,
                                          Boolean showTableOfContents, Boolean generateQRCodes, Boolean showFamilie, Boolean showGattung,
                                          Boolean showPlantDescription, Boolean showPageNumbers){
-        boolean small = documentclass.contains(a6);
+        boolean small = documentclass.contains(a6) || documentclass.contains(a5);
 
         StringBuilder ret = new StringBuilder();
 
@@ -150,11 +151,11 @@ public class TexWriter {
         }
         ret.append((etikett.getFundort()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Fundort: \\\\} ");
-        ret.append((etikett.getFundort()!= null? etikett.getFundort() + "\\\\":length) + "\n");
+        ret.append((etikett.getFundort()!= null? etikett.getFundort().replace("\"", "''") + "\\\\":length) + "\n");
 
         ret.append((etikett.getStandort()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Standort: \\\\} ");
-        ret.append((etikett.getStandort()!= null? etikett.getStandort() + "\\\\":length) + "\n");
+        ret.append((etikett.getStandort()!= null? etikett.getStandort().replace("\"", "''") + "\\\\":length) + "\n");
 
         ret.append((etikett.getLeg()!= null?"":"\\begin{spacing}{" + spacing + "}\n"));
         ret.append("\\textbf{Leg: \\\\} ");
