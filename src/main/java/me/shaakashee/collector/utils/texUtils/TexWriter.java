@@ -218,6 +218,8 @@ public class TexWriter {
             ret.append(" \\glqq " + formatURL(etikett.getText().trim()) + " \\grqq ");
             ret.append("\\footnote{woertlich von \\url{" + formatURL(etikett.getUrl().trim()) + "} , von " + etikett.getPageDate().trim() + "}\n");
             ret.append("\\end{spacing}} \n");
+        } else if (generateQRCodes && etikett.getText() != null && etikett.getUrl() != null && etikett.getPageDate() != null && etikett.getPageTitle() != null) {
+            ret.append("\\vspace{5em}\n");
         }
 
         ret.append("\\end{multicols*}\n" +
