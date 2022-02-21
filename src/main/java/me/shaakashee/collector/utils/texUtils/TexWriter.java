@@ -64,6 +64,7 @@ public class TexWriter {
 
         ret.append("\\documentclass[12pt,a4paper]{article}\n" +
                 "\\usepackage[utf8]{inputenc}\n" +
+                "\\usepackage{fontspec}\n" +
                 "\\usepackage[german]{babel}\n" +
                 "\\usepackage[T1]{fontenc}\n" +
                 "\\usepackage{amsmath}\n" +
@@ -78,7 +79,8 @@ public class TexWriter {
                 "\\usepackage{microtype}\n" +
                 "\\usepackage[" + documentclass + ", " + borders + "]{geometry}\n" +
                 "\\usepackage[hyphens]{url}\n" +
-                "\\usepackage{qrcode}\n");
+                "\\usepackage{qrcode}\n" +
+                "\\setmainfont{DejaVu Serif}\n");
 
         ret.append("\\begin{document}\n");
 
